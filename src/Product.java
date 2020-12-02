@@ -6,21 +6,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 
 public class Product extends JFrame {
 
@@ -32,8 +31,8 @@ public class Product extends JFrame {
 	private JPanel panel;
 	private JLabel lblNewLabel_1;
 	private JPanel panel_1;
-	private JButton btnNewButton_1;
-	private JButton btnNewButton_2;
+	private JButton btnDel;
+	private JButton btnAdd;
 	private DefaultTableModel model, materialModel;
 	private JComboBox comboBox;
 	private DefaultComboBoxModel<Object> cModel;
@@ -43,8 +42,11 @@ public class Product extends JFrame {
 	private JLabel lblNewLabel_3;
 	private JLabel lblNewLabel_4;
 	private JButton btnModify;
-	private static String selectId;
+	private static String selectId, selectMaterial;
 	private JComboBox cb_pDiv;
+	private JTextField pm_qtt;
+	private JLabel lblNewLabel_5;
+	private JLabel lblNewLabel_6;
 
 	/**
 	 * Launch the application.
@@ -102,10 +104,10 @@ public class Product extends JFrame {
 		gbc_panel.gridy = 1;
 		contentPane.add(panel, gbc_panel);
 		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[]{300, 0, 0};
-		gbl_panel.rowHeights = new int[]{0, 0, 0, 0};
-		gbl_panel.columnWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{1.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel.columnWidths = new int[]{300, 100, 0};
+		gbl_panel.rowHeights = new int[]{0, 0, 0, 0, 0};
+		gbl_panel.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
+		gbl_panel.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
 		
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
@@ -116,6 +118,20 @@ public class Product extends JFrame {
 		gbc_scrollPane.gridy = 0;
 		
 		cModel = new DefaultComboBoxModel<Object>();
+		
+		lblNewLabel_5 = new JLabel("Select material");
+		GridBagConstraints gbc_lblNewLabel_5 = new GridBagConstraints();
+		gbc_lblNewLabel_5.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_5.gridx = 0;
+		gbc_lblNewLabel_5.gridy = 1;
+		panel.add(lblNewLabel_5, gbc_lblNewLabel_5);
+		
+		lblNewLabel_6 = new JLabel("Quantity");
+		GridBagConstraints gbc_lblNewLabel_6 = new GridBagConstraints();
+		gbc_lblNewLabel_6.insets = new Insets(0, 0, 5, 0);
+		gbc_lblNewLabel_6.gridx = 1;
+		gbc_lblNewLabel_6.gridy = 1;
+		panel.add(lblNewLabel_6, gbc_lblNewLabel_6);
 		comboBox = new JComboBox(cModel);
 		comboBox.setEnabled(false);
 		ComboAgent agent = new ComboAgent(comboBox);
@@ -123,19 +139,28 @@ public class Product extends JFrame {
 		comboBox.setToolTipText("select material");
 		comboBox.setSelectedIndex(-1);
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();
-		gbc_comboBox.gridwidth = 2;
-		gbc_comboBox.insets = new Insets(0, 0, 5, 0);
-		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_comboBox.insets = new Insets(0, 0, 5, 5);
+		gbc_comboBox.fill = GridBagConstraints.BOTH;
 		gbc_comboBox.gridx = 0;
-		gbc_comboBox.gridy = 1;
+		gbc_comboBox.gridy = 2;
 		panel.add(comboBox, gbc_comboBox);
+		
+		pm_qtt = new JTextField();
+		pm_qtt.setEnabled(false);
+		GridBagConstraints gbc_pm_qtt = new GridBagConstraints();
+		gbc_pm_qtt.insets = new Insets(0, 0, 5, 0);
+		gbc_pm_qtt.fill = GridBagConstraints.BOTH;
+		gbc_pm_qtt.gridx = 1;
+		gbc_pm_qtt.gridy = 2;
+		panel.add(pm_qtt, gbc_pm_qtt);
+		pm_qtt.setColumns(10);
 		
 		panel_1 = new JPanel();
 		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
 		gbc_panel_1.gridwidth = 2;
 		gbc_panel_1.fill = GridBagConstraints.BOTH;
 		gbc_panel_1.gridx = 0;
-		gbc_panel_1.gridy = 2;
+		gbc_panel_1.gridy = 3;
 		panel.add(panel_1, gbc_panel_1);
 		GridBagLayout gbl_panel_1 = new GridBagLayout();
 		gbl_panel_1.columnWidths = new int[]{0, 0, 0};
@@ -144,25 +169,69 @@ public class Product extends JFrame {
 		gbl_panel_1.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		panel_1.setLayout(gbl_panel_1);
 		
-		btnNewButton_2 = new JButton("Add(+)");
-		btnNewButton_2.addActionListener(new ActionListener() {
+		btnAdd = new JButton("Add Material");
+		btnAdd.setEnabled(false);
+		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+				if(pm_qtt.getText().isEmpty()) { // 공백체크
+					JOptionPane.showMessageDialog(contentPane, "값을 입력해주세요.");
+					return;	
+				}
+					
+				db.dbConnect("product_material");
+				try { // 서브쿼리라 진짜 쿼리 쓰기 싫었는데 다른 방법이 안떠올라서 쿼리로 쓴 db중복체크 
+					db.query("select", "select material_id from product_material "
+							+ "where product_id = " + selectId
+							+ " and material_id = "
+							+ "(select id from product where name like '" + comboBox.getSelectedItem().toString() + "')");
+					while(db.rs.next()) {
+						if(!db.rs.getString("material_id").equals(null)) {
+							JOptionPane.showMessageDialog(contentPane, "중복된 값입니다.");
+							return;
+						}
+					}
+					db.query("insert into", "insert into product_material"
+							+ " values(" + selectId
+							+ ", "
+							+ "(select id from product where name like '" + comboBox.getSelectedItem().toString() + "')"
+							+ ", " + pm_qtt.getText() + ")");
+				}catch (Exception e1){
+					e1.printStackTrace();
+				}
+				db.dbDis();
+				refresh();
 			}
 		});
-		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
-		gbc_btnNewButton_2.fill = GridBagConstraints.BOTH;
-		gbc_btnNewButton_2.insets = new Insets(0, 0, 0, 5);
-		gbc_btnNewButton_2.gridx = 0;
-		gbc_btnNewButton_2.gridy = 0;
-		panel_1.add(btnNewButton_2, gbc_btnNewButton_2);
+		GridBagConstraints gbc_btnAdd = new GridBagConstraints();
+		gbc_btnAdd.fill = GridBagConstraints.BOTH;
+		gbc_btnAdd.insets = new Insets(0, 0, 0, 5);
+		gbc_btnAdd.gridx = 0;
+		gbc_btnAdd.gridy = 0;
+		panel_1.add(btnAdd, gbc_btnAdd);
 		
-		btnNewButton_1 = new JButton("Sub(-)");
-		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-		gbc_btnNewButton_1.fill = GridBagConstraints.BOTH;
-		gbc_btnNewButton_1.gridx = 1;
-		gbc_btnNewButton_1.gridy = 0;
-		panel_1.add(btnNewButton_1, gbc_btnNewButton_1);
+		btnDel = new JButton("Delete Material");
+		btnDel.setEnabled(false);
+		btnDel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				db.dbConnect("product_material");
+				try {
+					db.query("DELETE", "delete from product_material"
+							+ " where product_id = " + selectId
+							+ " and material_id = "
+							+ "(select id from product "
+							+ " where name like '" + comboBox.getSelectedItem().toString() + "')");
+				} catch(Exception e1) {
+					e1.printStackTrace();
+				}
+				db.dbDis();
+				refresh();
+			}
+		});
+		GridBagConstraints gbc_btnDel = new GridBagConstraints();
+		gbc_btnDel.fill = GridBagConstraints.BOTH;
+		gbc_btnDel.gridx = 1;
+		gbc_btnDel.gridy = 0;
+		panel_1.add(btnDel, gbc_btnDel);
 		
 		scrollPane_1 = new JScrollPane();
 		GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
@@ -187,6 +256,14 @@ public class Product extends JFrame {
 		refresh();
 
 		materialTable = new JTable(materialModel);
+		materialTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				int row = materialTable.getSelectedRow();
+				selectMaterial = materialTable.getValueAt(row, 1).toString();
+				comboBox.setSelectedItem(selectMaterial);
+			}
+		});
 		scrollPane.setViewportView(materialTable);
 		productTable = new JTable(model);
 		
@@ -194,6 +271,8 @@ public class Product extends JFrame {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				try {
+					btnDel.setEnabled(false);
+					btnAdd.setEnabled(false);
 					int row = productTable.getSelectedRow();
 					selectId = productTable.getValueAt(row, 0).toString();
 					tf_pName.setText(productTable.getValueAt(row, 1).toString());
@@ -201,9 +280,14 @@ public class Product extends JFrame {
 //					tf_pDiv.setText(productTable.getValueAt(row, 3).toString());
 					cb_pDiv.setSelectedItem(productTable.getValueAt(row, 3));
 					if(productTable.getValueAt(row, 3).equals("Product")) {
+						btnDel.setEnabled(true);
+						btnAdd.setEnabled(true);
+						materialModel.setNumRows(0);
+						cModel.removeAllElements();
 						comboBox.setEnabled(true);
+						pm_qtt.setEnabled(true);
 						try {
-							db.dbConnect("product_materials");
+							db.dbConnect("product_material");
 							db.query("select", "SELECT p.id, p.name, p.cost, p.division, pm.quantity\r\n" + 
 									"FROM product p, product_material pm\r\n" + 
 									"WHERE p.id = pm.material_id\r\n" + 
@@ -221,15 +305,7 @@ public class Product extends JFrame {
 							db.dbDis();
 							cModel.removeAllElements();
 							db.dbConnect("product");
-							db.query("select", "SELECT Name\r\n" + 
-									"FROM product\r\n" + 
-									"WHERE Division LIKE 'Material'\r\n" + 
-									"AND NOT id\r\n" + 
-									"IN (\r\n" + 
-									"\r\n" + 
-									"SELECT material_id\r\n" + 
-									"FROM product_material\r\n" + 
-									"WHERE product_id = " + selectId + ")");
+							db.query("select", "SELECT Name from product where division like 'Material'");
 							while(db.rs.next()) {
 								cModel.addElement(db.rs.getString("Name"));
 							}
@@ -237,14 +313,17 @@ public class Product extends JFrame {
 							e1.printStackTrace();
 						}
 						db.dbDis();
+						comboBox.setSelectedItem("");
 					} else {
 						cModel.removeAllElements();
 						comboBox.setEnabled(false);
+						pm_qtt.setEnabled(false);
 						materialModel.setNumRows(0);
 					}
 				} catch (Exception e1) {
 					cModel.removeAllElements();
 					comboBox.setEnabled(false);
+					pm_qtt.setEnabled(false);
 				}
 			}
 		});
@@ -331,6 +410,7 @@ public class Product extends JFrame {
 	}
 	private void refresh() {
 		model.setNumRows(0);
+		materialModel.setNumRows(0);
 		db.dbConnect("product");
 		try {
 			while(db.rs.next()) {
@@ -347,6 +427,40 @@ public class Product extends JFrame {
 				model.addRow(data);
 			}
 		}catch(Exception e1){
+			e1.printStackTrace();
+		}
+		try {
+			db.dbConnect("product_material");
+			db.query("select", "SELECT p.id, p.name, p.cost, p.division, pm.quantity\r\n" + 
+					"FROM product p, product_material pm\r\n" + 
+					"WHERE p.id = pm.material_id\r\n" + 
+					"AND pm.product_id = " + selectId);
+			while(db.rs.next()) {
+				Object data[] = {
+						db.rs.getString("ID"),
+						db.rs.getString("Name"),
+						db.rs.getString("Cost"),
+						db.rs.getString("Division"),
+						db.rs.getString("quantity")
+				};
+				materialModel.addRow(data);
+			}
+			db.dbDis();
+			cModel.removeAllElements();
+			db.dbConnect("product");
+			db.query("select", "SELECT Name\r\n" + 
+					"FROM product\r\n" + 
+					"WHERE Division LIKE 'Material'\r\n" + 
+					"AND NOT id\r\n" + 
+					"IN (\r\n" + 
+					"\r\n" + 
+					"SELECT material_id\r\n" + 
+					"FROM product_material\r\n" + 
+					"WHERE product_id = " + selectId + ")");
+			while(db.rs.next()) {
+				cModel.addElement(db.rs.getString("Name"));
+			}
+		}catch (Exception e1) {
 			e1.printStackTrace();
 		}
 		db.dbDis();
