@@ -262,7 +262,7 @@ public class RCSH extends JFrame {
 		}
 		db.dbDis();
 	}
-	private void addRCSH() {
+	private void addRCSH() { // 이거 몇번고쳤는지도 모르겠다 제발 복잡한 과정의 코드를 짤땐 먼저 생각하고 짜자...
 		if(quantity.getText().isEmpty()) {
 			JOptionPane.showMessageDialog(contentPane, "값을 입력해주세요.");
 			return;	
