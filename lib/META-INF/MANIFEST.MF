@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Implementation-Vendor: FormDev Software GmbH
+Implementation-Copyright: Copyright (C) 2020 FormDev Software GmbH. All 
+ rights reserved.
+Implementation-Version: 0.44
+Multi-Release: true
+
