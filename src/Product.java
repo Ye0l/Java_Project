@@ -1,33 +1,39 @@
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import java.awt.GridBagLayout;
-import javax.swing.JTable;
 import java.awt.GridBagConstraints;
-import javax.swing.JScrollPane;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
-import javax.swing.JLabel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JButton;
-import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 
 public class Product extends JFrame {
 
 	private JPanel contentPane;
-	private JTable table;
-	private JTable table_1;
-	private JScrollPane scrollPane_1;
+	private JTable materialTable;
+	private JTable productTable;
+	private JScrollPane scrollPane_1, scrollPane;
 	private JLabel lblNewLabel;
 	private JPanel panel;
-	private JButton btnNewButton;
-	private JTextField textField;
-	private JLabel lblNewLabel_2;
 	private JLabel lblNewLabel_1;
 	private JPanel panel_1;
 	private JButton btnNewButton_1;
 	private JButton btnNewButton_2;
+	private DefaultTableModel model, materialModel;
+	private JComboBox comboBox;
+	private List<Object> Array;
 
 	/**
 	 * Launch the application.
@@ -84,53 +90,41 @@ public class Product extends JFrame {
 		gbc_panel.gridy = 1;
 		contentPane.add(panel, gbc_panel);
 		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[]{150, 0, 0};
-		gbl_panel.rowHeights = new int[]{0, 0, 0, 0, 0};
-		gbl_panel.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel.columnWidths = new int[]{300, 0, 0};
+		gbl_panel.rowHeights = new int[]{0, 0, 0, 0};
+		gbl_panel.columnWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
+		gbl_panel.rowWeights = new double[]{1.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
 		
-		JScrollPane scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.gridwidth = 2;
 		gbc_scrollPane.insets = new Insets(0, 0, 5, 0);
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane.gridx = 0;
 		gbc_scrollPane.gridy = 0;
-		panel.add(scrollPane, gbc_scrollPane);
-
-		String header[] = {"","","",""};
-		String contents[][] = {
-				{"","","",""},
-				{"","","",""},
-				{"","","",""},
-				{"","","",""},
-				{"","","",""},
-				{"","","",""},
-				{"","","",""},
-				{"","","",""},
-				{"","","",""},
-				{"","","",""},
-				{"","","",""},
-				{"","","",""},
-				{"","","",""},
-				{"","","",""},
-				{"","","",""},
-				{"","","",""},
-				{"","","",""},
-				{"","","",""}
-		};
 		
-		table = new JTable(contents, header);
-		scrollPane.setViewportView(table);
+		arrayrefresh();
+		
+		comboBox = new JComboBox(Array.toArray());
+		comboBox.setEnabled(false);
+		ComboAgent agent = new ComboAgent(comboBox);
+		comboBox.setEditable(true);
+		comboBox.setToolTipText("select material name");
+		comboBox.setSelectedIndex(-1);
+		GridBagConstraints gbc_comboBox = new GridBagConstraints();
+		gbc_comboBox.gridwidth = 2;
+		gbc_comboBox.insets = new Insets(0, 0, 5, 0);
+		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_comboBox.gridx = 0;
+		gbc_comboBox.gridy = 1;
+		panel.add(comboBox, gbc_comboBox);
 		
 		panel_1 = new JPanel();
 		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
 		gbc_panel_1.gridwidth = 2;
-		gbc_panel_1.insets = new Insets(0, 0, 5, 0);
 		gbc_panel_1.fill = GridBagConstraints.BOTH;
 		gbc_panel_1.gridx = 0;
-		gbc_panel_1.gridy = 1;
+		gbc_panel_1.gridy = 2;
 		panel.add(panel_1, gbc_panel_1);
 		GridBagLayout gbl_panel_1 = new GridBagLayout();
 		gbl_panel_1.columnWidths = new int[]{0, 0, 0};
@@ -140,6 +134,11 @@ public class Product extends JFrame {
 		panel_1.setLayout(gbl_panel_1);
 		
 		btnNewButton_2 = new JButton("Add(+)");
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
 		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
 		gbc_btnNewButton_2.fill = GridBagConstraints.BOTH;
 		gbc_btnNewButton_2.insets = new Insets(0, 0, 0, 5);
@@ -154,30 +153,6 @@ public class Product extends JFrame {
 		gbc_btnNewButton_1.gridy = 0;
 		panel_1.add(btnNewButton_1, gbc_btnNewButton_1);
 		
-		lblNewLabel_2 = new JLabel("Product name");
-		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
-		gbc_lblNewLabel_2.gridwidth = 2;
-		gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 0);
-		gbc_lblNewLabel_2.gridx = 0;
-		gbc_lblNewLabel_2.gridy = 2;
-		panel.add(lblNewLabel_2, gbc_lblNewLabel_2);
-		
-		textField = new JTextField();
-		GridBagConstraints gbc_textField = new GridBagConstraints();
-		gbc_textField.insets = new Insets(0, 0, 0, 5);
-		gbc_textField.fill = GridBagConstraints.BOTH;
-		gbc_textField.gridx = 0;
-		gbc_textField.gridy = 3;
-		panel.add(textField, gbc_textField);
-		textField.setColumns(10);
-		
-		btnNewButton = new JButton("Modified");
-		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-		gbc_btnNewButton.fill = GridBagConstraints.BOTH;
-		gbc_btnNewButton.gridx = 1;
-		gbc_btnNewButton.gridy = 3;
-		panel.add(btnNewButton, gbc_btnNewButton);
-		
 		scrollPane_1 = new JScrollPane();
 		GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
 		gbc_scrollPane_1.gridheight = 2;
@@ -186,10 +161,101 @@ public class Product extends JFrame {
 		gbc_scrollPane_1.gridx = 0;
 		gbc_scrollPane_1.gridy = 1;
 		contentPane.add(scrollPane_1, gbc_scrollPane_1);
+
+		scrollPane = new JScrollPane();
+		panel.add(scrollPane, gbc_scrollPane);
+		String header[] = {"ID","NAME","COST","DIVISION"};
+		Object contents[][] = new Object[0][4];
+		String mHeader[] = {"ID","NAME","COST","DIVISION"};
+		Object mContents[][] = new Object[0][4];
+		model = new DefaultTableModel(contents, header);
+		materialModel = new DefaultTableModel(mContents, mHeader);
+		model.setNumRows(0);
+		materialModel.setNumRows(0);
+		
+		db.dbConnect("product");
+		try {
+			while(db.rs.next()) {
+				Object data[] = {
+						db.rs.getString("ID"),
+						db.rs.getString("Name"),
+						db.rs.getString("Cost"),
+						db.rs.getString("Division")
+				};
+				model.addRow(data);
+			}
+		}catch(Exception e1){
+			e1.printStackTrace();
+		}
+		db.dbDis();
+
+		materialTable = new JTable(materialModel);
+		scrollPane.setViewportView(materialTable);
+		productTable = new JTable(model);
+		productTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				try {
+					int row = productTable.getSelectedRow();
+					if(productTable.getValueAt(row, 3).equals("Product")) {
+						comboBox.setEnabled(true);
+						String id = productTable.getValueAt(row, 0).toString();
+						db.dbConnect("product_materials");
+						db.query("select", "SELECT p.id, p.name, p.cost, p.division, pm.quantity\r\n" + 
+								"FROM product p, product_material pm\r\n" + 
+								"WHERE p.id = pm.material_id\r\n" + 
+								"AND pm.product_id =1");
+						try {
+							while(db.rs.next()) {
+								Object data[] = {
+										db.rs.getString("ID"),
+										db.rs.getString("Name"),
+										db.rs.getString("Cost"),
+										db.rs.getString("Division")
+								};
+								materialModel.addRow(data);
+							}
+						}catch (Exception e1) {
+							e1.printStackTrace();
+						}
+						db.dbDis();
+					} else {
+						comboBox.setEnabled(false);
+						materialModel.setNumRows(0);
+						System.out.println("material테이블 초기화");
+					}
+				} catch (Exception e1) {
+					comboBox.setEnabled(false);
+					System.out.println("error");
+				}
+			}
+		});
+		scrollPane_1.setViewportView(productTable);
+	}
+	private void arrayrefresh() {
+		Array = new ArrayList<Object>();
 		
 		
-		table_1 = new JTable(contents, header);
-		scrollPane_1.setViewportView(table_1);
+		db.dbConnect("product");
+		try {
+			db.query("select", "SELECT Name\r\n" + 
+					"FROM product\r\n" + 
+					"WHERE Division LIKE 'Material'\r\n" + 
+					"AND NOT id\r\n" + 
+					"IN (\r\n" + 
+					"\r\n" + 
+					"SELECT material_id\r\n" + 
+					"FROM product_material\r\n" + 
+					"WHERE product_id =1\r\n" + 
+					")");
+			while(db.rs.next()) {
+				Array.add(db.rs.getString("Name"));
+			}
+		} catch(Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		db.dbDis();
 	}
 
 }
