@@ -4,6 +4,10 @@
 - MySQL forign key 설정
   - https://nsstbg.tistory.com/161
   - https://qastack.kr/programming/459312/setting-up-foreign-keys-in-phpmyadmin
+- JOptionPane
+  - https://m.blog.naver.com/rain483/220736475706
+- DefaultComboBoxModel
+  - http://cris.joongbu.ac.kr/course/java/api/javax/swing/DefaultComboBoxModel.html
 
 ### commit logs
 - fabb8ad2426d8c97d59bda2858424a5ad812ac74

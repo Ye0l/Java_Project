@@ -9,10 +9,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -39,6 +39,7 @@ public class RCSH extends JFrame {
 	private SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
 	private Calendar time = Calendar.getInstance();
 	private List<Object> Array;
+	private DefaultComboBoxModel<Object> cModel;
 
 	/**
 	 * Launch the application.
@@ -113,9 +114,10 @@ public class RCSH extends JFrame {
 		gbc_lblNewLabel_2.gridy = 0;
 		panel.add(lblNewLabel_2, gbc_lblNewLabel_2);
 		
+		cModel = new DefaultComboBoxModel<Object>();
 		arrayrefresh();
 		
-		comboBox = new JComboBox(Array.toArray());
+		comboBox = new JComboBox(cModel);
 		ComboAgent agent = new ComboAgent(comboBox);
 		comboBox.setEditable(true);
 		comboBox.setSelectedIndex(-1);
@@ -273,51 +275,53 @@ public class RCSH extends JFrame {
 		}
 		db.dbConnect("warehousing");
 		try {
-			db.query("insert into", "INSERT INTO `db_project`.`warehousing` ("
-					+ "`ID` ,`Name` ,`Date` ,`Quantity` ,`RCSH`)"
-					+ "VALUES (NULL , '"
-					+ comboBox.getSelectedItem() + "', '"
-					+ format1.format(time.getTime()) + "', '"
-					+ quantity.getText() + "', '"
-					+ comboBox_1.getSelectedItem() + "'" + 
-					");");
-		} catch(Exception e1) {
-			e1.printStackTrace();
-		}
-		db.dbDis();
-		int check = 0;
-		for(Object obj : Array) {
-			if(comboBox.getSelectedItem().equals(obj)) {
-				check = 1;
-				break;
+			while(db.rs.next()) {
+				if(db.rs.getString("name").equals(comboBox.getSelectedItem())) {
+					db.query("insert into", "INSERT INTO `db_project`.`warehousing` ("
+							+ "`ID` ,`Name` ,`Date` ,`Quantity` ,`RCSH`)"
+							+ "VALUES (NULL , '"
+							+ comboBox.getSelectedItem() + "', '"
+							+ format1.format(time.getTime()) + "', '"
+							+ quantity.getText() + "', '"
+							+ comboBox_1.getSelectedItem() + "'" + 
+							");");
+					break;
+				}
 			}
-		}
-		if(check == 0) {
-			db.dbConnect("product");
-			try {
+			int select = JOptionPane.showConfirmDialog(null, "등록되지 않은 물품입니다. 등록하시겠습니까?", "", JOptionPane.YES_NO_OPTION);
+			if(select == JOptionPane.YES_OPTION) {
+				db.query("insert into", "INSERT INTO `db_project`.`warehousing` ("
+						+ "`ID` ,`Name` ,`Date` ,`Quantity` ,`RCSH`)"
+						+ "VALUES (NULL , '"
+						+ comboBox.getSelectedItem() + "', '"
+						+ format1.format(time.getTime()) + "', '"
+						+ quantity.getText() + "', '"
+						+ comboBox_1.getSelectedItem() + "'" + 
+						");");
+				db.dbDis();
+				db.dbConnect("product");
 				db.query("inset into", "insert into `product` ("
 						+ "`Name`)"
 						+ "values ('"
 						+ comboBox.getSelectedItem() + "');");
-			} catch (Exception e) {
-				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, "등록되었습니다. 제품 관리에서 상세 정보를 수정하세요.");
+				arrayrefresh();
+				refreshlist();
+				comboBox.setSelectedIndex(-1);
+				quantity.setText("");
 			}
-			db.dbDis();
+		} catch(Exception e1) {
+			e1.printStackTrace();
 		}
-		JOptionPane.showMessageDialog(null, "등록되지 않은 상품이 등록되었습니다. 제품 관리에서 상세 정보를 수정하세요.");
-		arrayrefresh();
-		refreshlist();
-		comboBox.setSelectedIndex(-1);
-		quantity.setText("");
+		db.dbDis();
 	}
 	private void arrayrefresh() {
-		Array = new ArrayList<Object>();
-		
+		cModel.removeAllElements();
 		
 		db.dbConnect("product");
 		try {
 			while(db.rs.next()) {
-				Array.add(db.rs.getString("Name"));
+				cModel.addElement(db.rs.getString("Name"));
 			}
 		} catch(Exception e1) {
 			e1.printStackTrace();

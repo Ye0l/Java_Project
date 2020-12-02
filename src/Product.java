@@ -33,7 +33,7 @@ public class Product extends JFrame {
 	private JButton btnNewButton_2;
 	private DefaultTableModel model, materialModel;
 	private JComboBox comboBox;
-	private List<Object> Array;
+	private static List<Object> Array;
 
 	/**
 	 * Launch the application.
@@ -103,13 +103,32 @@ public class Product extends JFrame {
 		gbc_scrollPane.gridx = 0;
 		gbc_scrollPane.gridy = 0;
 		
-		arrayrefresh();
+//		arrayrefresh();
+		Array = new ArrayList<Object>();
+
+		db.dbConnect("product");
+		try {
+		db.query("select", "SELECT Name\r\n" + 
+				"FROM product\r\n" + 
+				"WHERE Division LIKE 'Material'\r\n" + 
+				"AND NOT id\r\n" + 
+				"IN (\r\n" + 
+				"\r\n" + 
+				"SELECT material_id\r\n" + 
+				"FROM product_material\r\n" + 
+				"WHERE product_id = " + "1" + ")");
+		while(db.rs.next()) {
+			Array.add(db.rs.getString("Name"));
+		}
+		} catch(Exception e1) {
+			e1.printStackTrace();
+		}
 		
 		comboBox = new JComboBox(Array.toArray());
 		comboBox.setEnabled(false);
 		ComboAgent agent = new ComboAgent(comboBox);
 		comboBox.setEditable(true);
-		comboBox.setToolTipText("select material name");
+		comboBox.setToolTipText("select material");
 		comboBox.setSelectedIndex(-1);
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();
 		gbc_comboBox.gridwidth = 2;
@@ -166,28 +185,14 @@ public class Product extends JFrame {
 		panel.add(scrollPane, gbc_scrollPane);
 		String header[] = {"ID","NAME","COST","DIVISION"};
 		Object contents[][] = new Object[0][4];
-		String mHeader[] = {"ID","NAME","COST","DIVISION"};
-		Object mContents[][] = new Object[0][4];
+		String mHeader[] = {"ID","NAME","COST","DIVISION", "QUANTITY"};
+		Object mContents[][] = new Object[0][5];
 		model = new DefaultTableModel(contents, header);
 		materialModel = new DefaultTableModel(mContents, mHeader);
 		model.setNumRows(0);
 		materialModel.setNumRows(0);
 		
-		db.dbConnect("product");
-		try {
-			while(db.rs.next()) {
-				Object data[] = {
-						db.rs.getString("ID"),
-						db.rs.getString("Name"),
-						db.rs.getString("Cost"),
-						db.rs.getString("Division")
-				};
-				model.addRow(data);
-			}
-		}catch(Exception e1){
-			e1.printStackTrace();
-		}
-		db.dbDis();
+		refresh();
 
 		materialTable = new JTable(materialModel);
 		scrollPane.setViewportView(materialTable);
@@ -200,20 +205,35 @@ public class Product extends JFrame {
 					if(productTable.getValueAt(row, 3).equals("Product")) {
 						comboBox.setEnabled(true);
 						String id = productTable.getValueAt(row, 0).toString();
-						db.dbConnect("product_materials");
-						db.query("select", "SELECT p.id, p.name, p.cost, p.division, pm.quantity\r\n" + 
-								"FROM product p, product_material pm\r\n" + 
-								"WHERE p.id = pm.material_id\r\n" + 
-								"AND pm.product_id =1");
 						try {
+							db.dbConnect("product_materials");
+							db.query("select", "SELECT p.id, p.name, p.cost, p.division, pm.quantity\r\n" + 
+									"FROM product p, product_material pm\r\n" + 
+									"WHERE p.id = pm.material_id\r\n" + 
+									"AND pm.product_id = " + id);
 							while(db.rs.next()) {
 								Object data[] = {
 										db.rs.getString("ID"),
 										db.rs.getString("Name"),
 										db.rs.getString("Cost"),
-										db.rs.getString("Division")
+										db.rs.getString("Division"),
+										db.rs.getString("quantity")
 								};
 								materialModel.addRow(data);
+							}
+							db.dbDis();
+							db.dbConnect("product");
+							db.query("select", "SELECT Name\r\n" + 
+									"FROM product\r\n" + 
+									"WHERE Division LIKE 'Material'\r\n" + 
+									"AND NOT id\r\n" + 
+									"IN (\r\n" + 
+									"\r\n" + 
+									"SELECT material_id\r\n" + 
+									"FROM product_material\r\n" + 
+									"WHERE product_id = " + id + ")");
+							while(db.rs.next()) {
+								Array.add(db.rs.getString("Name"));
 							}
 						}catch (Exception e1) {
 							e1.printStackTrace();
@@ -232,29 +252,45 @@ public class Product extends JFrame {
 		});
 		scrollPane_1.setViewportView(productTable);
 	}
-	private void arrayrefresh() {
-		Array = new ArrayList<Object>();
-		
-		
+//	private void arrayrefresh() {
+//		Array = new ArrayList<Object>();
+//		
+//		
+//		db.dbConnect("product");
+//		try {
+//			db.query("select", "SELECT Name\r\n" + 
+//					"FROM product\r\n" + 
+//					"WHERE Division LIKE 'Material'\r\n" + 
+//					"AND NOT id\r\n" + 
+//					"IN (\r\n" + 
+//					"\r\n" + 
+//					"SELECT material_id\r\n" + 
+//					"FROM product_material\r\n" + 
+//					"WHERE product_id = " + id + ")");
+//			while(db.rs.next()) {
+//				Array.add(db.rs.getString("Name"));
+//			}
+//		} catch(Exception e1) {
+//			e1.printStackTrace();
+//		}
+//		
+//		db.dbDis();
+//	}
+	private void refresh() {
 		db.dbConnect("product");
 		try {
-			db.query("select", "SELECT Name\r\n" + 
-					"FROM product\r\n" + 
-					"WHERE Division LIKE 'Material'\r\n" + 
-					"AND NOT id\r\n" + 
-					"IN (\r\n" + 
-					"\r\n" + 
-					"SELECT material_id\r\n" + 
-					"FROM product_material\r\n" + 
-					"WHERE product_id =1\r\n" + 
-					")");
 			while(db.rs.next()) {
-				Array.add(db.rs.getString("Name"));
+				Object data[] = {
+						db.rs.getString("ID"),
+						db.rs.getString("Name"),
+						db.rs.getString("Cost"),
+						db.rs.getString("Division")
+				};
+				model.addRow(data);
 			}
-		} catch(Exception e1) {
+		}catch(Exception e1){
 			e1.printStackTrace();
 		}
-		
 		db.dbDis();
 	}
 
