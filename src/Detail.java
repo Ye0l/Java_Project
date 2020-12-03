@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -139,6 +141,29 @@ public class Detail extends JFrame {
 		db.dbDis();
 		
 		table = new JTable(model);
+		table.getTableHeader().addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				int col = table.columnAtPoint(e.getPoint());
+				String name = table.getColumnName(col);
+				db.dbConnect("warehousing");
+				try {
+					model.setNumRows(0);
+					db.query("select", "select * from warehousing order by " + name + " asc");
+					while(db.rs.next()) {
+						String c0, c1, c2, c3;
+						c0 = db.rs.getString("name");
+						c1 = db.rs.getString("date");
+						c2 = db.rs.getString("quantity");
+						c3 = db.rs.getString("rcsh");
+						Object data[] = {c0, c1, c2, c3};
+						model.addRow(data);
+					}
+				}catch(Exception e1) {
+					e1.printStackTrace();
+				}
+				db.dbDis();
+			}
+		});
 		scrollPane.setViewportView(table);
 	}
 	

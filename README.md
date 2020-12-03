@@ -17,3 +17,5 @@
   - https://www.formdev.com/flatlaf/
 - JTable Column Header Click event
   - https://stackoverflow.com/questions/9992350/add-actionlistener-to-column-header-of-jtable
+- JList, DefaultListModel
+  - https://blog.naver.com/heoguni/130170350764

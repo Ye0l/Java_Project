@@ -65,8 +65,10 @@ public class MainScreen extends MoveJFrame {
 		JMenuItem mntmNewMenuItem = new JMenuItem("\uC0AC\uC6A9\uC790 \uAD8C\uD55C \uC124\uC815");
 		mntmNewMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				tabbedPane.removeTabAt(0);
+				if(tabbedPane.getTabCount() > 1)
+					tabbedPane.removeTabAt(1);
 				tabbedPane.addTab("계정 관리", null, new AccountSet().getContentPane(), null);
+				tabbedPane.setSelectedIndex(1);
 			}
 		});
 		mnNewMenu.add(mntmNewMenuItem);
@@ -94,8 +96,10 @@ public class MainScreen extends MoveJFrame {
 		JMenuItem mntmNewMenuItem_4 = new JMenuItem("\uC785\uCD9C\uACE0 \uB4F1\uB85D");
 		mntmNewMenuItem_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				tabbedPane.removeTabAt(0);
+				if(tabbedPane.getTabCount() > 1)
+					tabbedPane.removeTabAt(1);
 				tabbedPane.addTab("입출고 등록", null, new RCSH().getContentPane(), null);
+				tabbedPane.setSelectedIndex(1);
 			}
 		});
 		mnNewMenu_1.add(mntmNewMenuItem_4);
@@ -103,8 +107,10 @@ public class MainScreen extends MoveJFrame {
 		JMenuItem mntmNewMenuItem_5 = new JMenuItem("\uB0B4\uC5ED \uC870\uD68C");
 		mntmNewMenuItem_5.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				tabbedPane.removeTabAt(0);
-				tabbedPane.addTab("입출고 내역", null, new Detail().getContentPane(), null);
+				if(tabbedPane.getTabCount() > 1)
+					tabbedPane.removeTabAt(1);
+				tabbedPane.addTab("내역 조회", null, new Detail().getContentPane(), null);
+				tabbedPane.setSelectedIndex(1);
 			}
 		});
 		mnNewMenu_1.add(mntmNewMenuItem_5);
@@ -115,22 +121,48 @@ public class MainScreen extends MoveJFrame {
 		JMenuItem mntmNewMenuItem_6 = new JMenuItem("\uC81C\uD488 \uAD00\uB9AC");
 		mntmNewMenuItem_6.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				tabbedPane.removeTabAt(0);
+				if(tabbedPane.getTabCount() > 1)
+					tabbedPane.removeTabAt(1);
 				tabbedPane.addTab("제품 관리", null, new Product().getContentPane(), null);
+				tabbedPane.setSelectedIndex(1);
 			}
 		});
 		mnNewMenu_2.add(mntmNewMenuItem_6);
 		
 		JMenuItem mntmNewMenuItem_7 = new JMenuItem("\uD504\uB9AC\uC14B");
+		mntmNewMenuItem_7.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(tabbedPane.getTabCount() > 1)
+					tabbedPane.removeTabAt(1);
+				tabbedPane.addTab("프리셋", null, new preset().getContentPane(), null);
+				tabbedPane.setSelectedIndex(1);
+			}
+		});
 		mnNewMenu_2.add(mntmNewMenuItem_7);
 		
 		JMenu mnNewMenu_3 = new JMenu("\uD1B5\uACC4");
 		menuBar.add(mnNewMenu_3);
 		
 		JMenuItem mntmNewMenuItem_8 = new JMenuItem("\uB9E4\uCD9C \uC870\uD68C");
+		mntmNewMenuItem_8.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(tabbedPane.getTabCount() > 1)
+					tabbedPane.removeTabAt(1);
+				tabbedPane.addTab("매출 조회", null, new sales_inquiry().getContentPane(), null);
+				tabbedPane.setSelectedIndex(1);
+			}
+		});
 		mnNewMenu_3.add(mntmNewMenuItem_8);
 		
 		JMenuItem mntmNewMenuItem_9 = new JMenuItem("\uC7AC\uACE0 \uBD84\uC11D");
+		mntmNewMenuItem_9.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(tabbedPane.getTabCount() > 1)
+					tabbedPane.removeTabAt(1);
+				tabbedPane.addTab("재고 분석", null, new Analysis().getContentPane(), null);
+				tabbedPane.setSelectedIndex(1);
+			}
+		});
 		mnNewMenu_3.add(mntmNewMenuItem_9);
 		
 		Component horizontalStrut = Box.createHorizontalStrut(10);

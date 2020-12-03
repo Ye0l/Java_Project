@@ -187,6 +187,29 @@ public class RCSH extends JFrame {
 				selectItem = table_1.getValueAt(table_1.getSelectedRow(), 0).toString();
 			}
 		});
+		table_1.getTableHeader().addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				int col = table_1.columnAtPoint(e.getPoint());
+				String name = table_1.getColumnName(col);
+				db.dbConnect("warehousing");
+				try {
+					model.setNumRows(0);
+					db.query("select", "select * from warehousing order by " + name + " asc");
+					while(db.rs.next()) {
+						String c0, c1, c2, c3;
+						c0 = db.rs.getString("name");
+						c1 = db.rs.getString("date");
+						c2 = db.rs.getString("quantity");
+						c3 = db.rs.getString("rcsh");
+						Object data[] = {c0, c1, c2, c3};
+						model.addRow(data);
+					}
+				}catch(Exception e1) {
+					e1.printStackTrace();
+				}
+				db.dbDis();
+			}
+		});
 		scrollPane_1.setViewportView(table_1);
 		
 		JPanel panel_1 = new JPanel();

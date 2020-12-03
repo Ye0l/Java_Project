@@ -244,8 +244,8 @@ public class Product extends JFrame {
 
 		scrollPane = new JScrollPane();
 		panel.add(scrollPane, gbc_scrollPane);
-		String header[] = {"ID","NAME","COST","DIVISION"};
-		Object contents[][] = new Object[0][4];
+		String header[] = {"ID","NAME","COST","DIVISION", "AMOUNT"};
+		Object contents[][] = new Object[0][5];
 		String mHeader[] = {"ID","NAME","COST","DIVISION", "QUANTITY"};
 		Object mContents[][] = new Object[0][5];
 		model = new DefaultTableModel(contents, header);
@@ -275,12 +275,13 @@ public class Product extends JFrame {
 					model.setNumRows(0);
 					db.query("select", "select * from product order by " + name + " asc");
 					while(db.rs.next()) {
-						String c0, c1, c2, c3;
+						String c0, c1, c2, c3, c4;
 						c0 = db.rs.getString("id");
 						c1 = db.rs.getString("name");
 						c2 = db.rs.getString("cost");
 						c3 = db.rs.getString("division");
-						Object data[] = {c0, c1, c2, c3};
+						c4 = "";
+						Object data[] = {c0, c1, c2, c3, c4};
 						model.addRow(data);
 					}
 				}catch(Exception e1) {
