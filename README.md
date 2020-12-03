@@ -15,3 +15,5 @@
 - ui디자인 적용(lookandfeel)
   - https://madplay.github.io/post/java-swing-look-and-feel
   - https://www.formdev.com/flatlaf/
+- JTable Column Header Click event
+  - https://stackoverflow.com/questions/9992350/add-actionlistener-to-column-header-of-jtable

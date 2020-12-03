@@ -266,7 +266,29 @@ public class Product extends JFrame {
 		});
 		scrollPane.setViewportView(materialTable);
 		productTable = new JTable(model);
-		
+		productTable.getTableHeader().addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				int col = productTable.columnAtPoint(e.getPoint());
+				String name = productTable.getColumnName(col);
+				db.dbConnect("product");
+				try {
+					model.setNumRows(0);
+					db.query("select", "select * from product order by " + name + " asc");
+					while(db.rs.next()) {
+						String c0, c1, c2, c3;
+						c0 = db.rs.getString("id");
+						c1 = db.rs.getString("name");
+						c2 = db.rs.getString("cost");
+						c3 = db.rs.getString("division");
+						Object data[] = {c0, c1, c2, c3};
+						model.addRow(data);
+					}
+				}catch(Exception e1) {
+					e1.printStackTrace();
+				}
+				db.dbDis();
+			}
+		});
 		productTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
