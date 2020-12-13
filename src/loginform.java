@@ -135,41 +135,38 @@ public class loginform extends MoveJFrame {
 		gbc_pf_pw.gridy = 5;
 		panel.add(pf_pw, gbc_pf_pw);
 		
-		JButton btnNewButton = new JButton("Login"); // 안녕 난 로그인버튼이야
+		JButton btnNewButton = new JButton("Login");
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
 		gbc_btnNewButton.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewButton.gridx = 1;
 		gbc_btnNewButton.gridy = 6;
 		panel.add(btnNewButton, gbc_btnNewButton);
-		btnNewButton.addActionListener(new ActionListener() { // 버튼이 눌림
+		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				db.dbConnect("account"); // db랑 연결함
-//				여기서부터 passwordField내용물을 String으로 만드는 과정
+				db.dbConnect("account");
 				String pw = "";
 				char[] secret_pw = pf_pw.getPassword();
 				     for(char cha : secret_pw){         
 				    	 Character.toString(cha);
 				         pw += (pw.equals("")) ? ""+cha+"" : ""+cha+"";   
 				     }
-//				passwordField.getPassword(); -> String pw 완성
-				try { // ㄱㄱ
-					while(db.rs.next()) { // 대충 반복문 시작
+				try {
+					while(db.rs.next()) {
 						if(tf_id.getText().equals(db.rs.getString("id"))) {
-//						id textField랑 연결한 db resultSet의 id열 항목이 같습니까?
 							if(pw.equals(db.rs.getString("password"))) {
-//							그럼 passwordField내용물이랑 연결한 db resultSet의 pw열 항목이 같습니까?
 								MainScreen.loginUser = db.rs.getString("name");
-								new MainScreen().setVisible(true); // 다음 화면 ㄱㄱ
-								dispose(); // 로그인했으니 로그인창은 끄고 가야지
-								return; // 코드 종료 이거없으면 밑에 id/pw오류 메세지박스 뜸
+								MainScreen.loginID = db.rs.getString("id");
+								new MainScreen().setVisible(true);
+								dispose();
+								return;
 							}
 						}
-					} // 대충 반복문 끝
+					}
 					JOptionPane.showMessageDialog(contentPane, "id 혹은 password 오류입니다.");
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
-				db.dbDis(); // db 연결해제 잊지말기
+				db.dbDis();
 			}
 		});
 	}

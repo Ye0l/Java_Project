@@ -25,7 +25,8 @@ import javax.swing.SwingConstants;
 import java.awt.Font;
 
 public class MainScreen extends MoveJFrame {
-	static String loginUser = "(no account.)";
+	static String loginUser = "admin";
+	static String loginID = "";
 
 	private JPanel contentPane;
 
@@ -59,11 +60,12 @@ public class MainScreen extends MoveJFrame {
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		
-		JMenu mnNewMenu = new JMenu("\uACC4\uC815 \uAD00\uB9AC");
+		JMenu mnNewMenu = new JMenu("\uAD00\uB9AC");
 		menuBar.add(mnNewMenu);
 		
-		JMenuItem mntmNewMenuItem = new JMenuItem("\uC0AC\uC6A9\uC790 \uAD8C\uD55C \uC124\uC815");
-		mntmNewMenuItem.addActionListener(new ActionListener() {
+		JMenuItem mitem_AccountSet = new JMenuItem("\uC0AC\uC6A9\uC790 \uAD8C\uD55C \uC124\uC815");
+		mitem_AccountSet.setEnabled(false);
+		mitem_AccountSet.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(tabbedPane.getTabCount() > 1)
 					tabbedPane.removeTabAt(1);
@@ -71,10 +73,10 @@ public class MainScreen extends MoveJFrame {
 				tabbedPane.setSelectedIndex(1);
 			}
 		});
-		mnNewMenu.add(mntmNewMenuItem);
+		mnNewMenu.add(mitem_AccountSet);
 		
-		JMenuItem mntmNewMenuItem_1 = new JMenuItem("\uB85C\uADF8\uC544\uC6C3");
-		mntmNewMenuItem_1.addActionListener(new ActionListener() {
+		JMenuItem mitem_logout = new JMenuItem("\uB85C\uADF8\uC544\uC6C3");
+		mitem_logout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int result = JOptionPane.showConfirmDialog(null, "로그아웃합니까?", "Confirm", JOptionPane.YES_NO_OPTION);
 				if(result == JOptionPane.CLOSED_OPTION) {
@@ -88,13 +90,26 @@ public class MainScreen extends MoveJFrame {
 				}
 			}
 		});
-		mnNewMenu.add(mntmNewMenuItem_1);
+		
+		JMenuItem mitem_MenuAuth = new JMenuItem("\uBA54\uB274 \uAD8C\uD55C \uAD00\uB9AC");
+		mitem_MenuAuth.setEnabled(false);
+		mitem_MenuAuth.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(tabbedPane.getTabCount() > 1)
+					tabbedPane.removeTabAt(1);
+				tabbedPane.addTab("메뉴 권한 관리", null, new MenuAuth().getContentPane(), null);
+				tabbedPane.setSelectedIndex(1);
+			}
+		});
+		mnNewMenu.add(mitem_MenuAuth);
+		mnNewMenu.add(mitem_logout);
 		
 		JMenu mnNewMenu_1 = new JMenu("\uC7AC\uACE0 \uAD00\uB9AC");
 		menuBar.add(mnNewMenu_1);
 		
-		JMenuItem mntmNewMenuItem_4 = new JMenuItem("\uC785\uCD9C\uACE0 \uB4F1\uB85D");
-		mntmNewMenuItem_4.addActionListener(new ActionListener() {
+		JMenuItem mitem_RCSH = new JMenuItem("\uC785\uCD9C\uACE0 \uB4F1\uB85D");
+		mitem_RCSH.setEnabled(false);
+		mitem_RCSH.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(tabbedPane.getTabCount() > 1)
 					tabbedPane.removeTabAt(1);
@@ -102,10 +117,11 @@ public class MainScreen extends MoveJFrame {
 				tabbedPane.setSelectedIndex(1);
 			}
 		});
-		mnNewMenu_1.add(mntmNewMenuItem_4);
+		mnNewMenu_1.add(mitem_RCSH);
 		
-		JMenuItem mntmNewMenuItem_5 = new JMenuItem("\uB0B4\uC5ED \uC870\uD68C");
-		mntmNewMenuItem_5.addActionListener(new ActionListener() {
+		JMenuItem mitem_Detail = new JMenuItem("\uB0B4\uC5ED \uC870\uD68C");
+		mitem_Detail.setEnabled(false);
+		mitem_Detail.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(tabbedPane.getTabCount() > 1)
 					tabbedPane.removeTabAt(1);
@@ -113,13 +129,14 @@ public class MainScreen extends MoveJFrame {
 				tabbedPane.setSelectedIndex(1);
 			}
 		});
-		mnNewMenu_1.add(mntmNewMenuItem_5);
+		mnNewMenu_1.add(mitem_Detail);
 		
 		JMenu mnNewMenu_2 = new JMenu("\uC81C\uD488 \uAD00\uB9AC");
 		menuBar.add(mnNewMenu_2);
 		
-		JMenuItem mntmNewMenuItem_6 = new JMenuItem("\uC81C\uD488 \uAD00\uB9AC");
-		mntmNewMenuItem_6.addActionListener(new ActionListener() {
+		JMenuItem mitem_Product = new JMenuItem("\uC81C\uD488 \uAD00\uB9AC");
+		mitem_Product.setEnabled(false);
+		mitem_Product.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(tabbedPane.getTabCount() > 1)
 					tabbedPane.removeTabAt(1);
@@ -127,10 +144,11 @@ public class MainScreen extends MoveJFrame {
 				tabbedPane.setSelectedIndex(1);
 			}
 		});
-		mnNewMenu_2.add(mntmNewMenuItem_6);
+		mnNewMenu_2.add(mitem_Product);
 		
-		JMenuItem mntmNewMenuItem_7 = new JMenuItem("\uD504\uB9AC\uC14B");
-		mntmNewMenuItem_7.addActionListener(new ActionListener() {
+		JMenuItem mitem_Preset = new JMenuItem("\uD504\uB9AC\uC14B");
+		mitem_Preset.setEnabled(false);
+		mitem_Preset.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(tabbedPane.getTabCount() > 1)
 					tabbedPane.removeTabAt(1);
@@ -138,13 +156,14 @@ public class MainScreen extends MoveJFrame {
 				tabbedPane.setSelectedIndex(1);
 			}
 		});
-		mnNewMenu_2.add(mntmNewMenuItem_7);
+		mnNewMenu_2.add(mitem_Preset);
 		
 		JMenu mnNewMenu_3 = new JMenu("\uD1B5\uACC4");
 		menuBar.add(mnNewMenu_3);
 		
-		JMenuItem mntmNewMenuItem_8 = new JMenuItem("\uB9E4\uCD9C \uC870\uD68C");
-		mntmNewMenuItem_8.addActionListener(new ActionListener() {
+		JMenuItem mitem_Analysis = new JMenuItem("\uB9E4\uCD9C \uC870\uD68C");
+		mitem_Analysis.setEnabled(false);
+		mitem_Analysis.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(tabbedPane.getTabCount() > 1)
 					tabbedPane.removeTabAt(1);
@@ -152,10 +171,11 @@ public class MainScreen extends MoveJFrame {
 				tabbedPane.setSelectedIndex(1);
 			}
 		});
-		mnNewMenu_3.add(mntmNewMenuItem_8);
+		mnNewMenu_3.add(mitem_Analysis);
 		
-		JMenuItem mntmNewMenuItem_9 = new JMenuItem("\uC7AC\uACE0 \uBD84\uC11D");
-		mntmNewMenuItem_9.addActionListener(new ActionListener() {
+		JMenuItem mitem_sales_inquiry = new JMenuItem("\uC7AC\uACE0 \uBD84\uC11D");
+		mitem_sales_inquiry.setEnabled(false);
+		mitem_sales_inquiry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(tabbedPane.getTabCount() > 1)
 					tabbedPane.removeTabAt(1);
@@ -163,7 +183,7 @@ public class MainScreen extends MoveJFrame {
 				tabbedPane.setSelectedIndex(1);
 			}
 		});
-		mnNewMenu_3.add(mntmNewMenuItem_9);
+		mnNewMenu_3.add(mitem_sales_inquiry);
 		
 		Component horizontalStrut = Box.createHorizontalStrut(10);
 		menuBar.add(horizontalStrut);
@@ -253,5 +273,54 @@ public class MainScreen extends MoveJFrame {
 		gbc_lb_username.gridx = 2;
 		gbc_lb_username.gridy = 0;
 		panel.add(lb_username, gbc_lb_username);
+		
+		db.dbConnect("account");
+		try {
+			db.query("select", "select authorization from account where id like '" + loginID + "'");
+			int auth = 9;
+			if(db.rs.next()) {
+				auth = Integer.parseInt(db.rs.getString("authorization"));
+				System.out.println(db.rs.getString("authorization"));
+			}
+			db.dbDis();
+			db.dbConnect("menuauth");
+			while(db.rs.next()) {
+				if(Integer.parseInt(db.rs.getString("auth")) >= auth) {
+					switch (db.rs.getString("menuid")) {
+					case "1":
+						mitem_AccountSet.setEnabled(true);
+						break;
+					case "2":
+						mitem_MenuAuth.setEnabled(true);
+						break;
+					case "3":
+						mitem_RCSH.setEnabled(true);
+						break;
+					case "4":
+						mitem_Detail.setEnabled(true);
+						break;
+					case "5":
+						mitem_Product.setEnabled(true);
+						break;
+					case "6":
+						mitem_Preset.setEnabled(true);
+						break;
+					case "7":
+						mitem_Analysis.setEnabled(true);
+						break;
+					case "8":
+						mitem_sales_inquiry.setEnabled(true);
+						break;
+
+					default:
+						break;
+					}
+				}
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		db.dbDis();
+		
 	}
 }
